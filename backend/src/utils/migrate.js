@@ -37,10 +37,18 @@ async function runMigrations() {
   console.log('📂 Running migrations from:', schemaPath);
 
   const sql = fs.readFileSync(schemaPath, 'utf8');
-  const statements = sql
+
+  // Remove full-line comments (-- ...) and strip carriage returns
+  // then split on semicolons to get individual statements
+  const cleaned = sql
+    .replace(/\r\n/g, '\n')          // normalize Windows line endings
+    .replace(/^--.*$/gm, '')         // remove full-line SQL comments
+    .replace(/\n{3,}/g, '\n\n');     // collapse excess blank lines
+
+  const statements = cleaned
     .split(';')
     .map(s => s.trim())
-    .filter(s => s.length > 0 && !s.startsWith('--'));
+    .filter(s => s.length > 0);
 
   let ok = 0;
   let skipped = 0;
