@@ -85,8 +85,20 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`🚀 FOCUS+ API running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
-});
+async function startServer() {
+  // Run DB migrations before accepting traffic
+  try {
+    const { runMigrations } = require('./src/utils/migrate');
+    await runMigrations();
+  } catch (err) {
+    console.error('❌ Migration failed — starting server anyway:', err.message);
+  }
+
+  app.listen(PORT, () => {
+    console.log(`🚀 FOCUS+ API running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
+  });
+}
+
+startServer();
 
 module.exports = app;
