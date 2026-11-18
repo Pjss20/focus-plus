@@ -10,11 +10,13 @@ async function runMigrations() {
   // Dynamically require pool so dotenv is already loaded by caller
   const { pool } = require('../config/database');
 
-  // schema.sql is at <repo-root>/database/schema.sql
-  // When running in Railway /app = backend root, so go up one level
+  // schema.sql search order:
+  // 1. backend/database/schema.sql (Railway: /app/database/schema.sql — backend is root dir)
+  // 2. database/schema.sql relative to repo root (local dev)
+  // 3. CWD-based fallbacks
   const candidates = [
-    path.join(__dirname, '../../../database/schema.sql'), // local dev (backend/src/utils -> root)
-    path.join(__dirname, '../../database/schema.sql'),    // Railway (app/src/utils -> app)
+    path.join(__dirname, '../../database/schema.sql'),    // Railway: /app/src/utils -> /app/database
+    path.join(__dirname, '../../../database/schema.sql'), // local dev: backend/src/utils -> root/database
     path.join(process.cwd(), 'database/schema.sql'),      // CWD fallback
     path.join(process.cwd(), '../database/schema.sql'),   // CWD parent fallback
   ];
