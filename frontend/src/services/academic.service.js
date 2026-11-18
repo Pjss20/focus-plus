@@ -1,0 +1,13 @@
+import api from './api';
+export const getSubjects = () => api.get('/subjects').then(r => r.data);
+export const createSubject = (data) => api.post('/subjects', data).then(r => r.data);
+export const updateSubject = (id, data) => api.put(`/subjects/${id}`, data).then(r => r.data);
+export const deleteSubject = (id) => api.delete(`/subjects/${id}`).then(r => r.data);
+export const getExams = (params) => api.get('/exams', { params }).then(r => r.data);
+export const createExam = (data) => api.post('/exams', data).then(r => r.data);
+export const updateExam = (id, data) => api.put(`/exams/${id}`, data).then(r => r.data);
+export const deleteExam = (id) => api.delete(`/exams/${id}`).then(r => r.data);
+export const getAssignments = (params) => api.get('/assignments', { params }).then(r => r.data);
+export const createAssignment = (data) => api.post('/assignments', data).then(r => r.data);
+export const updateAssignment = (id, data) => api.put(`/assignments/${id}`, data).then(r => r.data);
+export const deleteAssignment = (id) => api.delete(`/assignments/${id}`).then(r => r.data);
